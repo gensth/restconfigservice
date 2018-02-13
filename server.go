@@ -10,7 +10,7 @@ import (
 	"os/exec"
 )
 
-const LocalServicePort string = ":3000"
+const LocalServicePort uint16 = 3000
 const ConfigFilename string = "config.txt"
 const PostSetCommand string = "./postSetConfig.sh"
 
@@ -18,7 +18,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	sub := router.PathPrefix("/api/v1/config").Subrouter()
 	sub.HandleFunc("/remote_address", handleAddress).Methods("GET", "POST")
-	log.Fatal(http.ListenAndServe(LocalServicePort, router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", LocalServicePort), router))
 }
 
 // Handle GET and POST on http://localhost:3000/api/v1/config/remote_address
