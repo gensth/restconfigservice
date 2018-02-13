@@ -22,14 +22,16 @@ func main() {
 	flag.Parse()
 
 	// configuring the HTTP REST service
+	pathPrefix := "/api/v1"
+	pathConfigSuffix := "/config"
 	router := mux.NewRouter().StrictSlash(true)
-	sub := router.PathPrefix("/api/v1").Subrouter()
-	sub.HandleFunc("/config", handleAddress).Methods("GET", "POST")
+	sub := router.PathPrefix(pathPrefix).Subrouter()
+	sub.HandleFunc(pathConfigSuffix, handleGetPostConfig).Methods("GET", "POST")
 	listenAddress := fmt.Sprintf(":%d", *localServicePort) // e.g. ":3000"
 
 	// logging the service configuration
 	fmt.Print("launching REST service\n")
-	fmt.Printf("    listening to: %s\n", listenAddress)
+	fmt.Printf("    listening to: http://localhost%s%s%s\n", listenAddress, pathPrefix, pathConfigSuffix)
 	fmt.Printf("    reading/writing from/to: %s\n", configFilename)
 	if postSetCommand != "" {
 		fmt.Printf("    executing after SET: %s\n", postSetCommand)
@@ -39,8 +41,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(listenAddress, router))
 }
 
-// Handle GET and POST on http://localhost:3000/api/v1/config/remote_address
-func handleAddress(res http.ResponseWriter, req *http.Request) {
+// Handle GET and POST on http://localhost:3000/api/v1/config
+func handleGetPostConfig(res http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case "GET":
 		// read text from config file
