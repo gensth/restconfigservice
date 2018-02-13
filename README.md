@@ -16,4 +16,4 @@ Execute in the root directory of this project
 
 ## Interaction with the REST service
 
-When the service is running, use e.g. [Postman](http://www.getpostman.com) to GET/POST from/to `http://localhost:3000/api/v1/config/remote_address`.
+When the service is running, use e.g. [Postman](http://www.getpostman.com) to GET/POST from/to `http://localhost:3000/api/v1/config`.

@@ -23,9 +23,10 @@ func main() {
 
 	// configuring the HTTP REST service
 	router := mux.NewRouter().StrictSlash(true)
-	sub := router.PathPrefix("/api/v1/config").Subrouter()
-	sub.HandleFunc("/remote_address", handleAddress).Methods("GET", "POST")
+	sub := router.PathPrefix("/api/v1").Subrouter()
+	sub.HandleFunc("/config", handleAddress).Methods("GET", "POST")
 	listenAddress := fmt.Sprintf(":%d", *localServicePort) // e.g. ":3000"
+
 	// logging the service configuration
 	fmt.Print("launching REST service\n")
 	fmt.Printf("    listening to: %s\n", listenAddress)
@@ -33,6 +34,7 @@ func main() {
 	if postSetCommand != "" {
 		fmt.Printf("    executing after SET: %s\n", postSetCommand)
 	}
+
 	// launching the HTTP REST service
 	log.Fatal(http.ListenAndServe(listenAddress, router))
 }
@@ -49,6 +51,7 @@ func handleAddress(res http.ResponseWriter, req *http.Request) {
 		// respond http request
 		res.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 		res.Write(dat)
+
 	case "POST":
 		body, err := ioutil.ReadAll(req.Body)
 		check(err, res)
