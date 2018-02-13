@@ -12,11 +12,6 @@ import (
 const LocalServicePort string = ":3000"
 const ConfigFilename string = "config.txt"
 
-type Endpoint struct {
-	IP   string `json:"ip"`
-	Port uint32 `json:"port"`
-}
-
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	sub := router.PathPrefix("/api/v1/config").Subrouter()
@@ -24,14 +19,17 @@ func main() {
 	log.Fatal(http.ListenAndServe(LocalServicePort, router))
 }
 
-// handle GET and POST on http://localhost:3000/api/v1/config/remote_address
+// Handle GET and POST on http://localhost:3000/api/v1/config/remote_address
 func handleAddress(res http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case "GET":
+		// read text from config file
 		dat, err := ioutil.ReadFile(ConfigFilename)
 		check(err, res)
 		fmt.Printf("read from %s: %s\n", ConfigFilename, string(dat))
 
+
+		// respond http request
 		res.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 		res.Write(dat)
 	case "POST":
@@ -46,11 +44,13 @@ func handleAddress(res http.ResponseWriter, req *http.Request) {
     	check(err, res)
 		fmt.Printf("wrote %d bytes to %s: %s\n", b, ConfigFilename, string(body))
 
+		// respond http request
 		//w.Header().Set("Location", r.URL.Path+"/" + com.Name)
 		res.WriteHeader(http.StatusCreated)
 	}
 }
 
+// Check an error code and if an error occured respond an http error.
 func check(err error, res http.ResponseWriter) {
     if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
