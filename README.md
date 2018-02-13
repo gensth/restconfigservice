@@ -4,8 +4,8 @@ A very simple REST service (written in Go) to read and write a config file.
 
 Features
 
-* Reading text from a config file on GET
-* Writing text to a config file on POST
+*   On GET: Responding the text read from a config file.
+*   On POST: Writing the submitted text to a config file and call a given command (e.g. restart another service).
 
 ## Compile and run
 

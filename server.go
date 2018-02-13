@@ -7,10 +7,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 const LocalServicePort string = ":3000"
 const ConfigFilename string = "config.txt"
+const PostSetCommand string = "./postSetConfig.sh"
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
@@ -28,7 +30,6 @@ func handleAddress(res http.ResponseWriter, req *http.Request) {
 		check(err, res)
 		fmt.Printf("read from %s: %s\n", ConfigFilename, string(dat))
 
-
 		// respond http request
 		res.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 		res.Write(dat)
@@ -43,6 +44,13 @@ func handleAddress(res http.ResponseWriter, req *http.Request) {
 		b, err := f.Write(body)
     	check(err, res)
 		fmt.Printf("wrote %d bytes to %s: %s\n", b, ConfigFilename, string(body))
+
+		// call the post-set command
+		if PostSetCommand != "" {
+			fmt.Printf("executing the post-set command: %s\n", PostSetCommand)
+			err = exec.Command(PostSetCommand).Run()
+			check(err, res)
+		}
 
 		// respond http request
 		//w.Header().Set("Location", r.URL.Path+"/" + com.Name)
