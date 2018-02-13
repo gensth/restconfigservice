@@ -44,7 +44,7 @@ func handleAddress(res http.ResponseWriter, req *http.Request) {
 		// read text from config file
 		dat, err := ioutil.ReadFile(configFilename)
 		check(err, res)
-		fmt.Printf("read from %s: %s\n", configFilename, string(dat))
+		fmt.Printf("read config %s: %s\n", configFilename, string(dat))
 
 		// respond http request
 		res.Header().Set("Content-Type", "text/plain; charset=UTF-8")
@@ -59,11 +59,11 @@ func handleAddress(res http.ResponseWriter, req *http.Request) {
 		defer f.Close()
 		b, err := f.Write(body)
     	check(err, res)
-		fmt.Printf("wrote %d bytes to %s: %s\n", b, configFilename, string(body))
+		fmt.Printf("wrote config %s (%d bytes): %s\n", configFilename, b, string(body))
 
 		// call the post-set command
 		if postSetCommand != "" {
-            fmt.Printf("executing the post-set command: %s\n", postSetCommand)
+            fmt.Printf("    executing the post-set command: %s\n", postSetCommand)
 			err = exec.Command(postSetCommand).Run()
 			check(err, res)
 		}
